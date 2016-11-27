@@ -332,9 +332,9 @@ int main(int argc, char **argv)
    MEM2_free(shader->vs.attribVars);
    MEM2_free(shader->ps.program);
    MEM2_free(shader->ps.samplerVars);
+   MEM2_free(shader->fs.program);
    MEM2_free(shader);
 
-   MEM2_free(shader->fs.program);
 
    MEM2_free(position_vb);
    MEM2_free(tex_coord_vb);
