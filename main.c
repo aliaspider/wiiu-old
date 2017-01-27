@@ -4,14 +4,12 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <math.h>
-#include <vpad/input.h>
-#include <nsysnet/socket.h>
-#include <coreinit/systeminfo.h>
-#include <coreinit/thread.h>
-#include <coreinit/foreground.h>
-#include <proc_ui/procui.h>
-#include "gx2.h"
-#include "system/memory.h"
+#include <wiiu/vpad.h>
+#include <sys/socket.h>
+#include <wiiu/os.h>
+#include <wiiu/procui.h>
+#include <wiiu/gx2.h>
+#include <system/memory.h>
 #include "shader/tex_shader.h"
 #include "wiiu_dbg.h"
 
@@ -94,13 +92,6 @@ uint32_t* create_mandelbrot(int width, int height)
    free(data_cnt);
    return data;
 }
-
-#include <sndcore2/core.h>
-#include <sndcore2/voice.h>
-#include <sys/stat.h>
-
-#include <coreinit/filesystem.h>
-#include "fs/sd_fat_devoptab.h"
 
 void SaveCallback()
 {
@@ -265,7 +256,7 @@ int main(int argc, char **argv)
    texture.surface.format   = GX2_SURFACE_FORMAT_UNORM_R8_G8_B8_A8;
    texture.surface.tileMode = GX2_TILE_MODE_LINEAR_ALIGNED;
    texture.viewNumSlices    = 1;
-   texture.compMap          = GX2_COMP_SEL(_X, _Y, _Z, _W);
+   texture.compMap          = GX2_COMP_SEL(_X_, _Y_, _Z_, _W_);
    GX2CalcSurfaceSizeAndAlignment(&texture.surface);
    GX2InitTextureRegs(&texture);
 

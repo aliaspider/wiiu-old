@@ -68,15 +68,15 @@ static struct
    {
       CALL_FS NO_BARRIER,
       ALU(32, 5),
-      EXP_DONE(POS0,   _R1, _X, _Y, _Z, _W),
-      EXP_DONE(PARAM0, _R2, _X, _Y, _Z, _Z) NO_BARRIER
+      EXP_DONE(POS0,   _R1, _X_, _Y_, _Z_, _W_),
+      EXP_DONE(PARAM0, _R2, _X_, _Y_, _Z_, _Z_) NO_BARRIER
       END_OF_PROGRAM
    },
    {
-      ALU_MOV(_R2, _X, _R2,             _X),
-      ALU_MOV(_R2, _Y, _R2,             _Y),
-      ALU_MOV(_R1, _Z, ALU_SRC_0,       _X),
-      ALU_LAST ALU_MOV(_R1, _W, ALU_SRC_LITERAL, _X), ALU_LITERAL(0x3F800000)
+      ALU_MOV(_R2, _X_, _R2,             _X_),
+      ALU_MOV(_R2, _Y_, _R2,             _Y_),
+      ALU_MOV(_R1, _Z_, ALU_SRC_0,       _X_),
+      ALU_LAST ALU_MOV(_R1, _W_, ALU_SRC_LITERAL, _X_), ALU_LITERAL(0x3F800000)
    }
 };
 
@@ -121,11 +121,11 @@ static struct
 {
    {
       TEX(16, 1) VALID_PIX,
-      EXP_DONE(PIX0, _R0, _X, _Y, _Z, _W)
+      EXP_DONE(PIX0, _R0, _X_, _Y_, _Z_, _W_)
       END_OF_PROGRAM
    },
    {
-      TEX_SAMPLE(_R0, _X, _Y, _Z, _W, _R0, _X, _Y, _0, _X, _t0, _s0)
+      TEX_SAMPLE(_R0, _X_, _Y_, _Z_, _W_, _R0, _X_, _Y_, _0_, _X_, _t0, _s0)
    }
 };
 
@@ -191,11 +191,11 @@ tex_shader_t tex_shader =
    {
       {
          0, 0, 0, GX2_ATTRIB_FORMAT_FLOAT_32_32,
-         GX2_ATTRIB_INDEX_PER_VERTEX, 0, GX2_COMP_SEL(_X, _Y, _0, _1), GX2_ENDIAN_SWAP_DEFAULT
+         GX2_ATTRIB_INDEX_PER_VERTEX, 0, GX2_COMP_SEL(_X_, _Y_, _0_, _1_), GX2_ENDIAN_SWAP_DEFAULT
       },
       {
          1, 1, 0, GX2_ATTRIB_FORMAT_FLOAT_32_32,
-         GX2_ATTRIB_INDEX_PER_VERTEX, 0, GX2_COMP_SEL(_X, _Y, _0, _1), GX2_ENDIAN_SWAP_DEFAULT
+         GX2_ATTRIB_INDEX_PER_VERTEX, 0, GX2_COMP_SEL(_X_, _Y_, _0_, _1_), GX2_ENDIAN_SWAP_DEFAULT
       }
    },
    {},

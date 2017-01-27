@@ -16,7 +16,7 @@
 #ifndef GX2_SHADER_INL_H
 #define GX2_SHADER_INL_H
 
-#ifdef MSB_FIRST
+#ifdef __BIG_ENDIAN__
 #define to_LE(x) __builtin_bswap32(x)
 #else
 #define to_LE(x) x
@@ -70,18 +70,6 @@
 
 #define TEX_WORD2(offsetX, offsetY, offsetZ, samplerID, srcSelX, srcSelY, srcSelZ, srcSelW) \
    to_LE(offsetX | (offsetY << 5) | (offsetZ << 10) | (samplerID << 15) | (srcSelX << 20) | (srcSelY << 23) | (srcSelZ << 26) | (srcSelW << 29))
-
-
-#ifndef GX2_COMP_SEL
-
-#define _X 0
-#define _Y 1
-#define _Z 2
-#define _W 3
-#define _0 4
-#define _1 5
-#define GX2_COMP_SEL(c0, c1, c2, c3) (((c0) << 24) | ((c1) << 16) | ((c2) << 8) | (c3))
-#endif
 
 
 #define ALU_LITERAL(v)  to_LE(v)
@@ -171,7 +159,7 @@
 #define TEX_SAMPLE(dstReg, dstSelX, dstSelY, dstSelZ, dstSelW, srcReg, srcSelX, srcSelY, srcSelZ, srcSelW, resourceID, samplerID)\
    TEX_WORD0(TEX_INST_SAMPLE, 0x0, 0x0, resourceID, srcReg, 0x0, 0x0), \
    TEX_WORD1(dstReg, 0x0, dstSelX, dstSelY, dstSelZ, dstSelW, 0x0, TEX_NORMALIZED, TEX_NORMALIZED, TEX_NORMALIZED, TEX_NORMALIZED), \
-   TEX_WORD2(0x0, 0x0, 0x0, samplerID, _X, _Y, _0, _X)
+   TEX_WORD2(0x0, 0x0, 0x0, samplerID, _X_, _Y_, _0_, _X_)
 
 #define _x2(v)        v, v
 #define _x4(v)   _x2(v), _x2(v)

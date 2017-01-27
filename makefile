@@ -1,4 +1,6 @@
 TARGET		:= gx2_example
+WIIU_COMMON_DIR := ./common
+
 
 BUILD_HBL_ELF	 = 1
 BUILD_RPX	 = 1
@@ -7,19 +9,20 @@ LOGGER_IP        =
 LOGGER_TCP_PORT	 =
 
 
+
 OBJ :=
-OBJ += system/entry.o
-OBJ += system/memory.o
-OBJ += system/exception_handler.o
-OBJ += system/logger.o
-OBJ += fs/sd_fat_devoptab.o
-OBJ += fs/fs_utils.o
+OBJ += $(WIIU_COMMON_DIR)/system/entry.o
+OBJ += $(WIIU_COMMON_DIR)/system/memory.o
+OBJ += $(WIIU_COMMON_DIR)/system/exception_handler.o
+OBJ += $(WIIU_COMMON_DIR)/system/logger.o
+OBJ += $(WIIU_COMMON_DIR)/fs/sd_fat_devoptab.o
+OBJ += $(WIIU_COMMON_DIR)/fs/fs_utils.o
 
 OBJ += main.o
 OBJ += shader/tex_shader.o
 
-RPX_OBJ      = system/stubs_rpl.o
-HBL_ELF_OBJ  = system/dynamic.o system/stubs_elf.o
+RPX_OBJ      = $(WIIU_COMMON_DIR)/system/stubs_rpl.o
+HBL_ELF_OBJ  = $(WIIU_COMMON_DIR)/system/dynamic.o $(WIIU_COMMON_DIR)/system/stubs_elf.o
 
 DEFINES :=
 
@@ -30,11 +33,7 @@ ifeq ($(strip $(DEVKITPRO)),)
 $(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>devkitPRO")
 endif
 
-ifeq ($(strip $(WUT_ROOT)),)
-$(error "Please set WUT_ROOT in your environment. export WUT_ROOT=<path to>WUT")
-endif
-
-export PATH	  := $(PATH):$(DEVKITPPC)/bin
+export PATH := $(PATH):$(DEVKITPPC)/bin
 
 PREFIX := powerpc-eabi-
 
@@ -47,12 +46,18 @@ STRIP   := $(PREFIX)strip
 NM      := $(PREFIX)nm
 LD      := $(CXX)
 
-ELF2RPL   := $(WUT_ROOT)/tools/bin/elf2rpl
+ELF2RPL   := $(WIIU_COMMON_DIR)/elf2rpl/elf2rpl
+ifneq ($(findstring Linux,$(shell uname -a)),)
+else ifneq ($(findstring Darwin,$(shell uname -a)),)
+else
+   ELF2RPL   := $(ELF2RPL).exe
+endif
 
-INCDIRS := -I. -I$(WUT_ROOT)/include
-LIBDIRS :=
+INCDIRS := -I. -I$(WIIU_COMMON_DIR)/include -I$(DEVKITPRO)/portlibs/ppc/include
+INCDIRS += -I$(WIIU_COMMON_DIR)
+LIBDIRS := -L$(DEVKITPRO)/portlibs/ppc/lib
 
-CFLAGS  := -mrvl -mcpu=750 -meabi -mhard-float
+CFLAGS  := -mwup -mcpu=750 -meabi -mhard-float
 LDFLAGS :=
 
 ifeq ($(DEBUG), 1)
@@ -64,14 +69,7 @@ LDFLAGS := $(CFLAGS)
 
 ASFLAGS := $(CFLAGS) -mregnames
 
-CFLAGS +=  -ffast-math -Werror=implicit-function-declaration
-#CFLAGS += -fomit-frame-pointer -mword-relocations
-#CFLAGS	+= -Wall
-CFLAGS += -Dstatic_assert=_Static_assert
-CFLAGS += -DWIIU -DMSB_FIRST
-CFLAGS += -DHAVE_MAIN
-CFLAGS += -DRARCH_INTERNAL -DRARCH_CONSOLE
-CFLAGS += -DHAVE_FILTERS_BUILTIN $(DEFINES)
+CFLAGS += -ffast-math -Werror=implicit-function-declaration
 
 ifneq ($(LOGGER_IP),)
    CFLAGS += -DLOGGER_IP='"$(LOGGER_IP)"'
@@ -87,13 +85,12 @@ LDFLAGS  += -Wl,--gc-sections
 
 LIBS	:= -lm
 
-RPX_LDFLAGS      := -T system/link_rpl.ld
-RPX_LDFLAGS      += -L$(WUT_ROOT)/lib -L$(DEVKITPPC)/lib
+RPX_LDFLAGS      := -T $(WIIU_COMMON_DIR)/system/link_rpl.ld
 RPX_LDFLAGS      += -pie -fPIE
 RPX_LDFLAGS      += -z common-page-size=64 -z max-page-size=64
 RPX_LDFLAGS      += -nostartfiles
 
-HBL_ELF_LDFLAGS  := -T system/link_elf.ld
+HBL_ELF_LDFLAGS  := -T $(WIIU_COMMON_DIR)/system/link_elf.ld
 
 TARGETS :=
 ifeq ($(BUILD_RPX), 1)
@@ -135,15 +132,17 @@ all: $(TARGETS)
 
 %.depend: ;
 
+$(ELF2RPL):
+	$(MAKE) -C $(dir $(ELF2RPL))
 
-$(TARGET).elf: $(OBJ) $(HBL_ELF_OBJ) libretro_wiiu.a system/link_elf.ld
+$(TARGET).elf: $(OBJ) $(HBL_ELF_OBJ) $(WIIU_COMMON_DIR)/system/link_elf.ld
 	$(LD) $(OBJ) $(HBL_ELF_OBJ) $(LDFLAGS) $(HBL_ELF_LDFLAGS) $(LIBDIRS) $(LIBS) -o $@
 
-$(TARGET).rpx.elf: $(OBJ) $(RPX_OBJ) libretro_wiiu.a system/link_rpl.ld
+$(TARGET).rpx.elf: $(OBJ) $(RPX_OBJ) $(WIIU_COMMON_DIR)/system/link_rpl.ld
 	$(LD) $(OBJ) $(RPX_OBJ) $(LDFLAGS) $(RPX_LDFLAGS) $(LIBDIRS)  $(LIBS) -o $@
 
-$(TARGET).rpx: $(TARGET).rpx.elf
-	-$(ELF2RPL) $(notdir $<) $@
+$(TARGET).rpx: $(TARGET).rpx.elf $(ELF2RPL)
+	$(ELF2RPL) $(notdir $<) $@
 
 clean:
 	rm -f $(OBJ) $(RPX_OBJ) $(HBL_ELF_OBJ) $(TARGET).elf $(TARGET).rpx.elf $(TARGET).rpx
