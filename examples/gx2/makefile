@@ -1,5 +1,5 @@
 TARGET		:= gx2_example
-WIIU_COMMON_DIR := ./common
+WIIU_COMMON_DIR := ../../common
 
 
 BUILD_HBL_ELF	 = 1

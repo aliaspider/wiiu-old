@@ -11,7 +11,7 @@
 #include <wiiu/gx2.h>
 #include <system/memory.h>
 #include "shader/tex_shader.h"
-#include "wiiu_dbg.h"
+#include "system/wiiu_dbg.h"
 
 typedef struct
 {
