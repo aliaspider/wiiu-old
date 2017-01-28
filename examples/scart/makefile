@@ -1,4 +1,4 @@
-TARGET		:= gx2_example
+TARGET		:= set_scart
 WIIU_COMMON_DIR := ../../common
 
 BUILD_HBL_ELF	 = 1
@@ -9,11 +9,11 @@ LOGGER_TCP_PORT	 =
 
 OBJ :=
 OBJ += main.o
-OBJ += shader/tex_shader.o
 
 DEFINES  :=
 INCDIRS  := -I.
 CFLAGS   :=
+
 CXXFLAGS := -fno-rtti -fno-exceptions
 LDFLAGS  :=
 LIBS     :=

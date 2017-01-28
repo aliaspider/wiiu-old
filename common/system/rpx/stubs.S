@@ -22,7 +22,7 @@
 /*#define IMPORT_END() .align 2;*/
 #define IMPORT_END()
 
-#include "imports.h"
+#include "../imports.h"
 
 
 #undef IMPORT_BEGIN 
@@ -50,4 +50,4 @@
    .long 2b; \
    .long 3b
 
-#include "imports.h"
+#include "../imports.h"

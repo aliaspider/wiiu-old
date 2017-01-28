@@ -4,7 +4,7 @@
 #define IMPORT(name) void* addr_##name
 #define IMPORT_BEGIN(lib)
 #define IMPORT_END()
-#include "imports.h"
+#include "../imports.h"
 
 #undef IMPORT
 #undef IMPORT_BEGIN
@@ -21,6 +21,6 @@ void InitFunctionPointers(void)
    addr_OSDynLoad_Acquire = *(void**)0x00801500;
    addr_OSDynLoad_FindExport = *(void**)0x00801504;
 
-#include "imports.h"
+#include "../imports.h"
 
 }
