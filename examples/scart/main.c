@@ -8,11 +8,9 @@
 #include <sys/socket.h>
 #include <system/memory.h>
 #include "system/wiiu_dbg.h"
+#include "system/exception_handler.h"
+#include "system/logger.h"
 
-
-void setup_os_exceptions(void);
-void log_init(const char * ipString, int port);
-void log_deinit(void);
 int main(int argc, char **argv)
 {
    setup_os_exceptions();

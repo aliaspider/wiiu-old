@@ -11,6 +11,8 @@
 #include <wiiu/gx2.h>
 #include <system/memory.h>
 #include "shader/tex_shader.h"
+#include "system/exception_handler.h"
+#include "system/logger.h"
 #include "system/wiiu_dbg.h"
 
 typedef struct
@@ -98,9 +100,6 @@ void SaveCallback()
    OSSavesDone_ReadyToRelease();
 }
 
-void setup_os_exceptions(void);
-void log_init(const char * ipString, int port);
-void log_deinit(void);
 int main(int argc, char **argv)
 {
    setup_os_exceptions();
